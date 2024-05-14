@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-service
+spec:
+  selector:
+    app: flask
+  ports:
+    - protocol: TCP
+      port: 80           # Map this service port to a different port on the host some times ( 502 Bad Gateway nginx, if was mistake in targetPort and port is difrent than targetPort )
+      targetPort: 5000  # The service targetPort should match the container port exposed by the pod in deployment. if not ( 503 Service Temporarily Unavailable nginx)!!!
+  type: ClusterIP
+  #type: LoadBalancer    #NOT WORKING!# Kubernetes will request a LoadBalancer from your cloud provider, and it will assign an external IP address or DNS name to your Service. If you're using a local Kubernetes cluster (like Kind), it may not work exactly like a cloud-based LoadBalancer, but it should still provide external access.
+
+---

@@ -1,0 +1,50 @@
+# Four node (three workers) cluster config
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+# Name Your Cluster, default kind
+name: 04-my-cluster 
+kubeadmConfigPatches:
+- |
+  apiVersion: kubelet.config.k8s.io/v1beta1
+  kind: KubeletConfiguration
+  evictionHard:
+    nodefs.available: "0%"
+# patch it further using a JSON 6902 patch
+kubeadmConfigPatchesJSON6902:
+- group: kubeadm.k8s.io
+  version: v1beta3
+  kind: ClusterConfiguration
+  patch: |
+    - op: add
+      path: /apiServer/certSANs/-
+      value: my-hostname
+# 1 control plane node and 3 workers
+nodes:
+- role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+  extraPortMappings:
+  - containerPort: 80 # Map container port ( the pod only not service)   # The containerPort in extraPortMappings should match 
+    hostPort: 80       # to host port 80 (in bouser localhost:80)         # the actual port your application inside the pod is using.
+    protocol: TCP
+  - containerPort: 443
+    hostPort: 443  # Map container port 443 to host port 8443
+    protocol: TCP
+- role: worker
+- role: worker
+- role: worker
+
+
+#
+# https://platform9.com/learn/v1.0/tutorials/nginix-controller-via-yaml
+#
+#One link to apply to make nginx controller running
+#kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+#check if all components installed
+#kubectl get pods --all-namespaces -l app.kubernetes.io/name=ingress-nginx
+#
+#kubectl get services ingress-nginx-controller --namespace=ingress-nginx

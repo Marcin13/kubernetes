@@ -1,0 +1,50 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-a
+data:
+  path-a.html: |
+    "/path-a.html" on service-a
+  path-b.html: |
+    "/path-b.html" on service-a
+  index.html: |
+    "/" on service-a  
+  404.html: |
+    service-a 404 page
+---
+
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-a-nginx.conf
+data:
+  nginx.conf: |
+    user  nginx;
+    worker_processes  1;
+    error_log  /var/log/nginx/error.log warn;
+    pid        /var/run/nginx.pid;
+    events {
+        worker_connections  1024;
+    }
+
+    http {
+        sendfile        on;
+        server {
+          listen       80;
+          server_name  localhost;
+
+          location / {
+              root   /usr/share/nginx/html;
+              index  index.html index.htm;
+          }
+
+          error_page 404 /404.html;
+          error_page   500 502 503 504  /50x.html;
+          location = /50x.html {
+              root   /usr/share/nginx/html;
+          }
+        }
+    }
+---

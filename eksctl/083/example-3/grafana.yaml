@@ -1,0 +1,27 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana
+  namespace: monitoring
+  annotations:
+    cert-manager.io/cluster-issuer: mitruk.me-ca
+    cert-manager.io/duration: 2160h # 90d
+    cert-manager.io/renew-before: 360h # 15d
+spec:
+  ingressClassName: external-nginx
+  tls:
+  - hosts:
+    - grafana.mitruk.me
+    secretName: grafana-mitruk-me-key-pair
+  rules:
+  - host: grafana.mitruk.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: grafana
+            port:
+              number: 3000

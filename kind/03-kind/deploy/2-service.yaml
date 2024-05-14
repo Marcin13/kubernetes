@@ -1,0 +1,24 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80         # Map this service port to a different port on the host some times ( 502 Bad Gateway nginx, if was mistake in targetPort and port is difrent than targetPort )
+    #  targetPort: 80       # The service targetPort should match the container port exposed by the pod in deployment. if not ( 503 Service Temporarily Unavailable nginx)!!!
+  type: ClusterIP
+  #type: LoadBalancer      # NOT WORKING!# Kubernetes will request a LoadBalancer from your cloud provider, and it will assign an external IP address or DNS name to your Service. If you're using a local Kubernetes cluster (like Kind), it may not work exactly like a cloud-based LoadBalancer, but it should still provide external access.
+  #type: NodePort          # Is not good idea because expose port to much 
+
+                          # Ingress controllers typically work with Services of type ClusterIP or NodePort. When using LoadBalancer, the Ingress controller might conflict with the load balancer service provisioned by the cloud provider.
+                          # In summary, the choice of service type depends on your use case:
+                          # Use ClusterIP for internal-only services.
+                          # Use NodePort for external access if you're managing the ports yourself.
+                          # Use LoadBalancer if you're in a cloud environment and want Kubernetes to manage external access. Note that for local clusters like Kind, LoadBalancer might not work as expected.
+
+
+---

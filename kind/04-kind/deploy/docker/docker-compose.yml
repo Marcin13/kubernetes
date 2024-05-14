@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  nginx-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "81:80"
+
+  # nginx:
+  #   build:
+  #     context: .
+  #     dockerfile: nginx.Dockerfile
+  #   restart: always
+  #   ports:
+  #     - "80:80"  # Map Nginx container port 80 to host port 80
+  #   depends_on:
+  #     - nginx-app

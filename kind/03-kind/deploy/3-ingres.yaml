@@ -1,0 +1,28 @@
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+
+spec:
+  rules:
+  - host: localhost  # Replace with your actual hostname
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-service   # Replace with the correct service name
+            port:
+              number: 80 # The port number should match the port specified in the Service resource (nginx-service), which is 8080 in this case. If not, you may encounter a "502 Bad Gateway nginx" error.
+      # - path: /foo(/|$)(.*)
+      #   pathType: Prefix
+      #   backend:
+      #     service:
+      #       name: foo-service
+      #       port:
+      #         number: 80 # Replace with the correct port number for the foo-service container

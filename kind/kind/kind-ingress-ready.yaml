@@ -1,0 +1,38 @@
+# Four node (three workers) cluster config
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+# Name Your Cluster, default kind
+name: my-cluster 
+nodes:
+- role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+  extraPortMappings:
+  - containerPort: 80
+    hostPort: 80          # to ten port co docelowo go w przegladarce daje
+    protocol: TCP
+  - containerPort: 443
+    hostPort: 443         # to ten port co w przegladarce go podaje 
+    protocol: TCP
+- role: worker
+- role: worker
+- role: worker
+
+
+#
+# https://platform9.com/learn/v1.0/tutorials/nginix-controller-via-yaml
+#
+#Ze strony kind, bedzie dzialac,
+#kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+#
+#Te dwa linki ponirzej tez dszialaja ale to nie do kind
+#!kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.44.0/deploy/static/provider/cloud/deploy.yaml
+#!kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.44.0/deploy/static/provider/baremetal/deploy.yaml
+#
+#kubectl get pods --all-namespaces -l app.kubernetes.io/name=ingress-nginx
+#
+#kubectl get services ingress-nginx-controller --namespace=ingress-nginx

@@ -1,0 +1,28 @@
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+
+spec:
+  rules:
+  - host: localhost  # Replace with your actual hostname
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: flask-service
+            port:
+              number: 80 # The number field should match the port number port specified in the Service resource (nginx-service), which is 80 in this case. if not ( 502 Bad Gateway nginx )!!!
+      # - path: /foo(/|$)(.*)
+      #   pathType: Prefix
+      #   backend:
+      #     service:
+      #       name: foo-service
+      #       port:
+      #         number: 80 # Taki jak na kontenerze
